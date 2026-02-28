@@ -325,39 +325,46 @@ public:
             }
         }
         else if(ch==2){
-            string key;
-            cout << "Search by 1 character: ";
-            cin >> key;
+    string key;
+    cout << "Search by 1 character: ";
+    cin >> key;
 
-            vector<string> fof = friendsOfFriends(currentUser);
-            vector<string> others = nonFriendsPool(currentUser);
+    vector<string> fof = friendsOfFriends(currentUser);
+    vector<string> others = nonFriendsPool(currentUser);
 
-            cout << "\nFriends of Friends:\n";
-            int idx = 1;
-            for(auto &u : fof){
-                if(u.find(key)!=string::npos){
-                    cout << idx++ << ". " << u << endl;
-                }
-            }
+    vector<string> result;   // ใช้เก็บ list ที่แสดง
 
-            cout << "\nOther Users:\n";
-            for(auto &u : others){
-                if(u.find(key)!=string::npos){
-                    cout << idx++ << ". " << u << endl;
-                }
-            }
-
-            cout << "Select to add (0 cancel): ";
-            int c; cin >> c;
-            // เพื่อความง่าย เลือกจาก nonFriendsPool
-            auto pool = nonFriendsPool(currentUser);
-            if(c>0 && c<=pool.size()){
-                adj[currentUser].insert(pool[c-1]);
-                adj[pool[c-1]].insert(currentUser);
-                saveFriends();
-                cout << "Friend added.\n";
-            }
+    cout << "\nFriends of Friends:\n";
+    for(auto &u : fof){
+        if(u.find(key)!=string::npos){
+            result.push_back(u);
+            cout << result.size() << ". " << u << endl;
         }
+    }
+
+    cout << "\nOther Users:\n";
+    for(auto &u : others){
+        if(u.find(key)!=string::npos){
+            result.push_back(u);
+            cout << result.size() << ". " << u << endl;
+        }
+    }
+
+    if(result.empty()){
+        cout << "No user found.\n";
+        return;
+    }
+
+    cout << "Select to add (0 cancel): ";
+    int c; cin >> c;
+
+    if(c>0 && c<=result.size()){
+        adj[currentUser].insert(result[c-1]);
+        adj[result[c-1]].insert(currentUser);
+        saveFriends();
+        cout << "Friend added.\n";
+    }
+}
     }
 
     void userDashboard(){
